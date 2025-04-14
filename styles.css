@@ -27,6 +27,7 @@ body {
     min-height: 100vh;
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
+    padding: 10px; /* Add padding to prevent content from touching screen edges */
 }
 
 .game-wrapper {
@@ -34,6 +35,8 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    max-width: 1000px; /* Limit maximum width for larger screens */
+    width: 100%; /* Ensure it scales to smaller screens */
 }
 
 .score-panel {
@@ -45,37 +48,74 @@ body {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 100%; /* Ensure it doesn't overflow on smaller screens */
+    flex-wrap: wrap; /* Allow wrapping of content on smaller screens */
+    gap: 10px; /* Add spacing between wrapped elements */
 }
 
 #game-container {
     width: 800px;
-    height: 600px;
+    height: 70vh; /* Use relative height for better responsiveness */
     background-color: #e6f7ff;
     border: 2px solid #333;
     border-radius: 8px;
     position: relative;
     overflow: hidden;
+    max-width: 100%; /* Ensure it scales to smaller screens */
+    background-image: url('img/water-can.png');
+    background-size: cover; /* Ensure the image covers the entire container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
 }
 
-
-#start-btn {
+#start-btn, #reset-btn {
     padding: 8px 16px;
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Default green color */
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    flex: 1; /* Ensure both buttons resize equally */
+    text-align: center;
+    min-width: 120px; /* Ensure consistent button width */
 }
 
-#start-btn:hover {
-    background-color: #45a049;
+#start-btn:hover, #reset-btn:hover {
+    background-color: #45a049; /* Hover effect for both buttons */
+}
+
+#reset-btn {
+    background-color: #f44336; /* Red for reset */
+    cursor: pointer; /* Ensure it is always clickable */
+}
+
+#reset-btn:hover {
+    background-color: #d32f2f;
+}
+
+#reset-btn:disabled {
+    background-color: #f44336; /* Keep the same color */
+    cursor: pointer; /* Ensure it remains clickable */
+    opacity: 1; /* Remove faded appearance */
+}
+
+#start-btn:disabled {
+    background-color: #ccc; /* Gray for disabled state */
+    cursor: not-allowed;
+    opacity: 0.7; /* Slightly faded appearance */
 }
 
 .score {
     flex: 0 1 auto;  /* Don't grow, can shrink, auto basis */
     font-size: 24px;
     font-weight: bold;
+}
+
+.high-score {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
 }
 
 .water-drop {
@@ -109,12 +149,108 @@ body {
     text-align: center;
 }
 
+.score-message {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    animation: fadeUp 1s ease-out forwards;
+    pointer-events: none;
+    transform: translate(-50%, -50%); /* Center the message over the drop */
+}
+
+.score-message.positive {
+    color: #4CAF50; /* Green for +1 */
+}
+
+.score-message.negative {
+    color: #F5402C; /* Red for -1 */
+}
+
+.milestone-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFC907; /* Charity: water yellow */
+    color: #131313; /* Dark text for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+#timer {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.game-over-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FF902A; /* Orange for visibility */
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    animation: fadeInOut 5s ease-in-out;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.cw-logo {
+    display: block;
+    margin: 0 auto 20px auto; /* Center the logo and add spacing below */
+    max-width: 200px;
+    height: auto;
+}
+
 @keyframes dropFall {
     from {
         transform: translateY(-20px);
     }
     to {
         transform: translateY(600px);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 
@@ -125,5 +261,24 @@ body {
     
     #game-container {
         height: 70vh;
+    }
+}
+
+@media (max-width: 600px) {
+    .game-title {
+        font-size: 36px; /* Adjust title size for smaller screens */
+    }
+
+    .game-tagline {
+        font-size: 16px; /* Adjust tagline size for smaller screens */
+    }
+
+    .score {
+        font-size: 20px; /* Adjust score size for smaller screens */
+    }
+
+    #start-btn {
+        font-size: 14px; /* Adjust button size for smaller screens */
+        padding: 6px 12px; /* Adjust padding for smaller screens */
     }
 }
