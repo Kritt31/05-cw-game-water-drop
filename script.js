@@ -147,35 +147,33 @@ function updateScoreDisplay(change, drop) {
         document.getElementById('high-score').textContent = highScore;
     }
 
-    // Show a special message at score intervals of 10
-    if (score > 0 && score % 10 === 0) {
-        showMilestoneMessage();
-    }
+    // Trigger milestone messages
+    showMilestoneMessage();
 }
 
-const facts = [
-    "Great job! Did you know? 100% of donations to charity: water go towards funding clean water projects!",
-    "Amazing! charity: water has funded over 91,000 water projects worldwide!",
-    "Keep it up! Clean water can improve health, education, and economic opportunities!",
-    "Fantastic! Over 14.7 million people have gained access to clean water thanks to charity: water!",
-    "You're doing great! Every $40 donated can bring clean water to one person for life!"
+const milestoneMessages = [
+    { score: 5, message: "Halfway there!" },
+    { score: 10, message: "Great job! Keep going!" },
+    { score: 15, message: "You're doing amazing!" },
+    { score: 20, message: "Almost there! Stay focused!" },
+    { score: 25, message: "Incredible! You've reached the goal!" }
 ];
 
 function showMilestoneMessage() {
-    const gameContainer = document.getElementById('game-container');
-    const milestoneMessage = document.createElement('div');
-    milestoneMessage.className = 'milestone-message';
+    const milestone = milestoneMessages.find(m => m.score === score);
+    if (milestone) {
+        const gameContainer = document.getElementById('game-container');
+        const milestoneMessage = document.createElement('div');
+        milestoneMessage.className = 'milestone-message';
+        milestoneMessage.textContent = milestone.message;
 
-    // Select a fact based on the current score
-    const factIndex = (score / 10 - 1) % facts.length; // Cycle through facts
-    milestoneMessage.textContent = facts[factIndex];
+        gameContainer.appendChild(milestoneMessage);
 
-    gameContainer.appendChild(milestoneMessage);
-
-    // Remove the message after 3 seconds
-    setTimeout(() => {
-        milestoneMessage.remove();
-    }, 3000);
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            milestoneMessage.remove();
+        }, 3000);
+    }
 }
 
 function endGame() {
