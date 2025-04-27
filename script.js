@@ -5,6 +5,9 @@ let score = 0;           // Initialize score
 let gameTimer;           // Stores the timer interval
 let timeLeft = 60;       // Game duration in seconds
 let highScore = 0;       // Initialize high score
+let winCondition = 20; // Default win condition for Normal mode
+let dropInterval = 1000; // Default drop interval for Normal mode
+let gameDuration = 60; // Default game duration for Normal mode
 
 // Event listener for the start button
 document.getElementById('start-btn').addEventListener('click', startGame);
@@ -12,14 +15,32 @@ document.getElementById('start-btn').addEventListener('click', startGame);
 // Event listener for the reset button
 document.getElementById('reset-btn').addEventListener('click', resetGame);
 
+document.getElementById('difficulty-select').addEventListener('change', (event) => {
+    const difficulty = event.target.value;
+
+    if (difficulty === 'easy') {
+        winCondition = 15;
+        dropInterval = 1200;
+        gameDuration = 70;
+    } else if (difficulty === 'normal') {
+        winCondition = 20;
+        dropInterval = 1000;
+        gameDuration = 60;
+    } else if (difficulty === 'hard') {
+        winCondition = 25;
+        dropInterval = 800;
+        gameDuration = 50;
+    }
+});
+
 // Game initialization function
 function startGame() {
     // Prevent multiple game instances
     if (gameActive) return;
-    
+
     // Set up initial game state
     gameActive = true;
-    timeLeft = 60; // Reset timer
+    timeLeft = gameDuration; // Set timer based on difficulty
     document.getElementById('timer').textContent = `Time Left: ${timeLeft}s`;
 
     // Start the game timer
@@ -31,44 +52,69 @@ function startGame() {
             endGame();
         }
     }, 1000);
-    
-    // Start creating drops every 1000ms (1 second)
-    gameInterval = setInterval(createDrop, 1000);
+
+    // Start creating drops based on difficulty
+    gameInterval = setInterval(createDrop, dropInterval);
 }
 
 // Function to create and manage individual water drops
 function createDrop() {
     const drop = document.createElement('div');
-    
+
     // Randomly determine if this drop is good or bad (20% chance of bad)
     const isBadDrop = Math.random() < 0.2;
     drop.className = isBadDrop ? 'water-drop bad-drop' : 'water-drop';
-    
+
     // Create random size variation for visual interest
     const scale = 0.8 + Math.random() * 0.7;  // Results in 80% to 150% of original size
     drop.style.transform = `scale(${scale})`;
-    
+
     // Position drop randomly along the width of the game container
     const gameWidth = document.getElementById('game-container').offsetWidth;
     const randomX = Math.random() * (gameWidth - 40);
     drop.style.left = `${randomX}px`;
-    
+
     // Set drop animation speed
     drop.style.animationDuration = '4s';
-    
+
     // Simple click handler to remove drops
     drop.addEventListener('click', () => {
+        if (!isBadDrop) {
+            playWaterDropSound(); // Play sound for clean water drops
+        } else {
+            playMissedDropSound(); // Play sound for bad drops
+        }
         updateScoreDisplay(isBadDrop ? -1 : 1, drop); // Pass the drop element to position the message
         drop.remove();
     });
-    
+
     // Add drop to game container
     document.getElementById('game-container').appendChild(drop);
-    
+
     // Remove drop if it reaches bottom without being clicked
     drop.addEventListener('animationend', () => {
-        drop.remove();
+        drop.remove(); // No sound is played here
     });
+}
+
+function playWaterDropSound() {
+    const audio = new Audio('sounds/water-drip.mp3');
+    audio.play();
+}
+
+function playMissedDropSound() {
+    const audio = new Audio('sounds/water-drip.mp3');
+    audio.play();
+}
+
+function playButtonClickSound() {
+    const audio = new Audio('sounds/water-drip.mp3');
+    audio.play();
+}
+
+function playWinSound() {
+    const audio = new Audio('sounds/water-drip.mp3');
+    audio.play();
 }
 
 // Function to update score display
@@ -138,11 +184,16 @@ function endGame() {
     clearInterval(gameTimer);
     gameActive = false;
 
-    // Display game over message
+    // Check if the player met the win condition
     const gameContainer = document.getElementById('game-container');
     const gameOverMessage = document.createElement('div');
     gameOverMessage.className = 'game-over-message';
-    gameOverMessage.textContent = `Game Over! Your final score is ${score}.`;
+    if (score >= winCondition) {
+        gameOverMessage.textContent = `Congratulations! You won with a score of ${score}!`;
+        playWinSound(); // Play win sound
+    } else {
+        gameOverMessage.textContent = `Game Over! Your final score is ${score}. Try again!`;
+    }
     gameContainer.appendChild(gameOverMessage);
 
     // Remove the message after 5 seconds

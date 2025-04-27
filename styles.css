@@ -219,6 +219,20 @@ body {
     height: auto;
 }
 
+#difficulty-select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#difficulty-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
 @keyframes dropFall {
     from {
         transform: translateY(-20px);
@@ -281,4 +295,21 @@ body {
         font-size: 14px; /* Adjust button size for smaller screens */
         padding: 6px 12px; /* Adjust padding for smaller screens */
     }
+}
+
+.charity-links {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+.charity-links a {
+    color: #2E9DF7; /* Charity: water blue */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.charity-links a:hover {
+    text-decoration: underline;
 }
