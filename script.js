@@ -117,7 +117,32 @@ function playWinSound() {
     audio.play();
 }
 
-// Function to update score display
+const milestoneMessages = [
+    { score: 10, message: "Halfway there! Keep it up!" },
+    { score: 20, message: "Amazing! charity: water has funded over 91,000 water projects worldwide!" },
+    { score: 30, message: "You're doing incredible! Almost at the goal!" },
+    { score: 40, message: "Did you know? 100% of donations to charity: water go towards funding clean water projects!" },
+    { score: 50, message: "Congratulations! You've reached the goal!" }
+];
+
+function showMilestoneMessage() {
+    const milestone = milestoneMessages.find(m => m.score === score);
+    if (milestone) {
+        const gameContainer = document.getElementById('game-container');
+        const milestoneMessage = document.createElement('div');
+        milestoneMessage.className = 'milestone-message';
+        milestoneMessage.textContent = milestone.message;
+
+        gameContainer.appendChild(milestoneMessage);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            milestoneMessage.remove();
+        }, 3000);
+    }
+}
+
+// Modify `updateScoreDisplay` to trigger milestone messages
 function updateScoreDisplay(change, drop) {
     const messageDisplay = document.getElementById('message-display');
     const message = document.createElement('div');
@@ -149,31 +174,6 @@ function updateScoreDisplay(change, drop) {
 
     // Trigger milestone messages
     showMilestoneMessage();
-}
-
-const milestoneMessages = [
-    { score: 5, message: "Halfway there!" },
-    { score: 10, message: "Great job! Keep going!" },
-    { score: 15, message: "You're doing amazing!" },
-    { score: 20, message: "Almost there! Stay focused!" },
-    { score: 25, message: "Incredible! You've reached the goal!" }
-];
-
-function showMilestoneMessage() {
-    const milestone = milestoneMessages.find(m => m.score === score);
-    if (milestone) {
-        const gameContainer = document.getElementById('game-container');
-        const milestoneMessage = document.createElement('div');
-        milestoneMessage.className = 'milestone-message';
-        milestoneMessage.textContent = milestone.message;
-
-        gameContainer.appendChild(milestoneMessage);
-
-        // Remove the message after 3 seconds
-        setTimeout(() => {
-            milestoneMessage.remove();
-        }, 3000);
-    }
 }
 
 function endGame() {
